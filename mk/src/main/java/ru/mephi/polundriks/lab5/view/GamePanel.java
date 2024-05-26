@@ -15,6 +15,7 @@ public class GamePanel extends JPanel {
     private JLabel enemyStats;
     private JButton attackButton;
     private JButton defendButton;
+    private JButton weakenButton;
     private JButton skipButton;
 
     public GamePanel(GameController gameController) {
@@ -31,10 +32,12 @@ public class GamePanel extends JPanel {
         JPanel actionsPanel = new JPanel();
         attackButton = new JButton("Атака");
         defendButton = new JButton("Защита");
+        weakenButton = new JButton("Ослабить");
         skipButton = new JButton("Пропуск хода");
 
         actionsPanel.add(attackButton);
         actionsPanel.add(defendButton);
+        actionsPanel.add(weakenButton);
         actionsPanel.add(skipButton);
 
         attackButton.addActionListener(e -> {
@@ -44,6 +47,11 @@ public class GamePanel extends JPanel {
 
         defendButton.addActionListener(e -> {
             gameController.playerDefend();
+            update(gameController.getGameState());
+        });
+
+        weakenButton.addActionListener(e -> {
+            gameController.playerWeaken();
             update(gameController.getGameState());
         });
 

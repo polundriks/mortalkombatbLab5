@@ -8,6 +8,10 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
+/**
+ * Класс ItemsPanel представляет панель предметов в игре.
+ * Он отображает список доступных предметов и позволяет игроку использовать предметы.
+ */
 public class ItemsPanel extends JFrame {
     private GameController gameController;
     private JList<Item> itemsList;
@@ -15,6 +19,12 @@ public class ItemsPanel extends JFrame {
     private JButton useButton;
     private JButton closeButton;
 
+    /**
+     * Конструктор ItemsPanel.
+     *
+     * @param gameController контроллер игры
+     * @param updateGuiCallback функция обратного вызова для обновления интерфейса
+     */
     public ItemsPanel(GameController gameController, Runnable updateGuiCallback) {
         this.gameController = gameController;
         setTitle("Мешок предметов");
@@ -51,6 +61,9 @@ public class ItemsPanel extends JFrame {
         updateItemsList();
     }
 
+    /**
+     * Обновляет список предметов, отображаемых на панели.
+     */
     public void updateItemsList() {
         itemsListModel.clear();
         for (Item item : gameController.getGameState().getPlayer().getItems()) {
@@ -58,6 +71,11 @@ public class ItemsPanel extends JFrame {
         }
     }
 
+    /**
+     * Использует выбранный предмет и обновляет интерфейс.
+     *
+     * @param updateGameInterface функция обратного вызова для обновления интерфейса
+     */
     private void useSelectedItem(Runnable updateGameInterface) {
         Item selectedItem = itemsList.getSelectedValue();
         if (selectedItem != null) {

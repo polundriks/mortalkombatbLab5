@@ -8,6 +8,10 @@ import ru.mephi.polundriks.lab5.model.*;
 
 import java.util.Random;
 
+/**
+ * Класс GameController управляет основной логикой игры.
+ * Он отвечает за управление состоянием игры, взаимодействие с игроком и противниками.
+ */
 @Slf4j
 public class GameController {
     @Getter
@@ -21,8 +25,10 @@ public class GameController {
     private boolean playerStunned;
     private boolean enemyStunned;
     private boolean playerDefending;
-    //private StringJoiner gameLog;
 
+    /**
+     * Конструктор GameController инициализирует новую игру.
+     */
     public GameController() {
         gameState = new GameState();
         ioController = new IOController();
@@ -30,10 +36,14 @@ public class GameController {
         playerStunned = false;
         enemyStunned = false;
         playerDefending = false;
-        recordTable = new RecordTable(); // todo ioController.loadRecordTable();
-        //gameLog = new StringJoiner("");
+        recordTable = new RecordTable();
     }
 
+    /**
+     * Метод startNewGame начинает новую игру с заданным количеством локаций.
+     *
+     * @param totalLocations общее количество локаций в игре
+     */
     public void startNewGame(int totalLocations) {
         gameState = new GameState();
         gameState.setTotalLocations(totalLocations);
@@ -44,6 +54,9 @@ public class GameController {
         playerDefending = false;
     }
 
+    /**
+     * Метод moveToNextLocation перемещает игрока на следующую локацию.
+     */
     public void moveToNextLocation() {
         if (gameState.getCurrentLocation() < gameState.getTotalLocations()) {
             gameState.setCurrentLocation(gameState.getCurrentLocation() + 1);
@@ -53,6 +66,9 @@ public class GameController {
         }
     }
 
+    /**
+     * Метод playerAttack выполняет атаку игрока.
+     */
     public void playerAttack() {
         log.info("Игрок атакует с силой {}\n", gameState.getPlayer().getAttackDamage());
         if (playerTurn) {
@@ -125,6 +141,9 @@ public class GameController {
         }
     }
 
+    /**
+     * Метод playerDefend выполняет защиту игрока.
+     */
     public void playerDefend() {
         log.info("Игрок защищается\n");
         if (playerTurn) {
@@ -153,6 +172,9 @@ public class GameController {
         }
     }
 
+    /**
+     * Метод playerSkip пропускает ход игрока.
+     */
     public void playerSkip() {
         log.info("Игрок пропускает ход\n");
         if (playerTurn) {
@@ -169,10 +191,16 @@ public class GameController {
         }
     }
 
+    /**
+     * Метод increasePlayerDamage увеличивает урон игрока.
+     */
     public void increasePlayerDamage() {
         gameState.getPlayer().increasePlayerDamage();
     }
 
+    /**
+     * Метод increasePlayerHealth увеличивает здоровье игрока.
+     */
     public void increasePlayerHealth() {
         gameState.getPlayer().increasePlayerMaxHealth();
     }
@@ -195,6 +223,7 @@ public class GameController {
                     enemy.setWeakenedTurns(player.getLevel());
                     enemy.setAttackDamage(enemy.getAttackDamage() / 2);
                     player.setAttackDamage((int) (player.getAttackDamage() * 1.25));
+                    log.info("Игрок ослаблен\n");
                 }
             } else {
                 // Если противник атакует, ослабление срывается, а ослабитель получает дополнительный урон
@@ -314,6 +343,11 @@ public class GameController {
         }
     }
 
+    /**
+     * Метод useItem использует выбранный предмет.
+     *
+     * @param item предмет, который нужно использовать
+     */
     public void useItem(Item item) {
         Player player = gameState.getPlayer();
         switch (item.getType()) {
@@ -330,6 +364,12 @@ public class GameController {
         player.removeItem(item);
     }
 
+    /**
+     * Метод addRecord добавляет новую запись в таблицу рекордов.
+     *
+     * @param playerName имя игрока
+     * @param score      количество очков
+     */
     public void addRecord(String playerName, int score) {
         recordTable.addRecord(new Record(playerName, score));
         ioController.saveRecordTable(recordTable);
