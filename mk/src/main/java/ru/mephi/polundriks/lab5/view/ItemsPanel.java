@@ -5,6 +5,8 @@ import ru.mephi.polundriks.lab5.model.Item;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class ItemsPanel extends JFrame {
     private GameController gameController;
@@ -13,7 +15,7 @@ public class ItemsPanel extends JFrame {
     private JButton useButton;
     private JButton closeButton;
 
-    public ItemsPanel(GameController gameController, Runnable updateGameInterface) {
+    public ItemsPanel(GameController gameController, Runnable updateGuiCallback) {
         this.gameController = gameController;
         setTitle("Мешок предметов");
         setSize(300, 400);
@@ -29,14 +31,17 @@ public class ItemsPanel extends JFrame {
 
         useButton = new JButton("Использовать");
         useButton.addActionListener(e -> {
-            Item selectedItem = itemsList.getSelectedValue();
-            if (selectedItem != null) {
-                gameController.useItem(selectedItem);
-                updateItemsList();
-                updateGameInterface.run();
-            }
+            useSelectedItem(updateGuiCallback);
         });
         buttonsPanel.add(useButton);
+
+        itemsList.addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() == 2) {
+                    useSelectedItem(updateGuiCallback);
+                }
+            }
+        });
 
         closeButton = new JButton("Закрыть");
         closeButton.addActionListener(e -> setVisible(false));
@@ -50,6 +55,15 @@ public class ItemsPanel extends JFrame {
         itemsListModel.clear();
         for (Item item : gameController.getGameState().getPlayer().getItems()) {
             itemsListModel.addElement(item);
+        }
+    }
+
+    private void useSelectedItem(Runnable updateGameInterface) {
+        Item selectedItem = itemsList.getSelectedValue();
+        if (selectedItem != null) {
+            gameController.useItem(selectedItem);
+            updateItemsList();
+            updateGameInterface.run();
         }
     }
 }

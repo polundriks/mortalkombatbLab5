@@ -37,7 +37,11 @@ public class GameState {
         level++;
         defeatedEnemies = 0;
         maxEnemies = getMaxEnemiesForLevel(level);
-        generateEnemy();
+        if (level == 3 || level == 5) {
+            generateBoss();
+        } else {
+            generateEnemy();
+        }
     }
 
     private int getMaxEnemiesForLevel(int level) {
@@ -53,12 +57,12 @@ public class GameState {
 
     public void generateEnemy() {
         EnemyCharacter[] enemyTypes = EnemyCharacter.values();
-        EnemyCharacter type = enemyTypes[(int) (Math.random() * enemyTypes.length)];
+        EnemyCharacter type = enemyTypes[(int) (Math.random() * (enemyTypes.length - 1))];
         currentEnemy = new Enemy(type, level);
     }
 
     private void generateBoss() {
-        // todo Здесь добавить логику для генерации босса в конце каждой локации
+        currentEnemy = new Enemy(EnemyCharacter.SHAO_KAHN, level);
     }
 
 }

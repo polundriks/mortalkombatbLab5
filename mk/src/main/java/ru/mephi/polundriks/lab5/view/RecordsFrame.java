@@ -5,6 +5,7 @@ import ru.mephi.polundriks.lab5.model.Record;
 import ru.mephi.polundriks.lab5.model.RecordTable;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 
 public class RecordsFrame extends JFrame {
@@ -18,6 +19,10 @@ public class RecordsFrame extends JFrame {
         setTitle("Таблица рекордов");
         setSize(400, 300);
         setLayout(new BorderLayout());
+
+        // Загрузка предыдущих результатов из файла Excel
+        RecordTable recordTable = gameController.getIoController().loadRecordTable();
+        gameController.setRecordTable(recordTable);
 
         updateRecordsTable();
         recordsTable = new JTable(data, columnNames);
@@ -34,7 +39,7 @@ public class RecordsFrame extends JFrame {
             row++;
         }
         if (recordsTable != null) {
-            recordsTable.setModel(new javax.swing.table.DefaultTableModel(data, columnNames));
+            recordsTable.setModel(new DefaultTableModel(data, columnNames));
         }
     }
 }

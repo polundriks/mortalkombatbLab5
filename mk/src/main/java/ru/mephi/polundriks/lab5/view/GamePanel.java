@@ -9,6 +9,7 @@ import javax.swing.*;
 import java.awt.*;
 
 public class GamePanel extends JPanel {
+    private GameController gameController;
     private JLabel locationLabel;
     private JLabel playerStats;
     private JLabel enemyStats;
@@ -17,6 +18,7 @@ public class GamePanel extends JPanel {
     private JButton skipButton;
 
     public GamePanel(GameController gameController) {
+        this.gameController = gameController;
         setLayout(new BorderLayout());
         locationLabel = new JLabel();
         playerStats = new JLabel();
@@ -93,6 +95,10 @@ public class GamePanel extends JPanel {
         ));
 
         if (gameState.isGameOver()) {
+            String playerName = JOptionPane.showInputDialog(this, "Введите ваше имя:");
+            if (playerName != null && !playerName.trim().isEmpty()) {
+                gameController.addRecord(playerName, gameState.getScore());
+            }
             JOptionPane.showMessageDialog(this, "Игра окончена! Вы набрали " + gameState.getScore() + " очков.");
             attackButton.setEnabled(false);
             defendButton.setEnabled(false);

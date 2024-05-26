@@ -1,6 +1,7 @@
 package ru.mephi.polundriks.lab5.controller;
 
 import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import ru.mephi.polundriks.lab5.model.Record;
 import ru.mephi.polundriks.lab5.model.*;
@@ -11,8 +12,10 @@ import java.util.Random;
 public class GameController {
     @Getter
     private GameState gameState;
+    @Getter
     private IOController ioController;
     @Getter
+    @Setter
     private RecordTable recordTable;
     private boolean playerTurn;
     private boolean playerStunned;

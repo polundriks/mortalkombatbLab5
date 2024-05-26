@@ -8,9 +8,9 @@ import static ru.mephi.polundriks.lab5.model.EnemyType.*;
 public enum EnemyCharacter {
     BARAKA(TANK),
     LIU_KANG(WARRIOR),
-    SHAO_KAHN(BOSS),
     SONYA_BLADE(SOLDIER),
-    SUB_ZERO(WIZARD);
+    SUB_ZERO(WIZARD),
+    SHAO_KAHN(BOSS);
 
     private final EnemyType type;
 

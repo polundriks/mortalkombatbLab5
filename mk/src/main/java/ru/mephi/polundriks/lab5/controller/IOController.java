@@ -8,16 +8,18 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import ru.mephi.polundriks.lab5.model.Record;
 import ru.mephi.polundriks.lab5.model.RecordTable;
 
-import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.Iterator;
 
 public class IOController {
     private static final String FILE_NAME = "results.xlsx";
 
     public void saveRecordTable(RecordTable recordTable) {
-        try (FileOutputStream fos = new FileOutputStream(FILE_NAME);
-             Workbook workbook = new XSSFWorkbook()) {
+        try (Workbook workbook = new XSSFWorkbook();
+             FileOutputStream fos = new FileOutputStream(FILE_NAME)) {
+
             Sheet sheet = workbook.createSheet("Results");
 
             int rowCount = 0;
@@ -37,21 +39,39 @@ public class IOController {
 
     public RecordTable loadRecordTable() {
         RecordTable recordTable = new RecordTable();
-        List<Record> records = new ArrayList<>();
 
-        try (InputStream fis = getClass().getResourceAsStream(FILE_NAME);
-             Workbook workbook = new XSSFWorkbook(fis)) {
+        try (Workbook workbook = new XSSFWorkbook(new FileInputStream(FILE_NAME))) {
             Sheet sheet = workbook.getSheetAt(0);
-            for (Row row : sheet) {
-                String name = row.getCell(0).getStringCellValue();
-                int score = (int) row.getCell(1).getNumericCellValue();
-                records.add(new Record(name, score));
+            Iterator<Row> rows = sheet.iterator();
+
+            while (rows.hasNext()) {
+                Row row = rows.next();
+                Cell nameCell = row.getCell(0);
+                Cell scoreCell = row.getCell(1);
+
+                if (nameCell != null && scoreCell != null) {
+                    String playerName = nameCell.getStringCellValue();
+                    int score = (int) scoreCell.getNumericCellValue();
+                    recordTable.addRecord(new Record(playerName, score));
+                }
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        recordTable.setRecords(records);
         return recordTable;
+    }
+
+    // test
+    public static void main(String[] args) {
+        // test
+        IOController ioController = new IOController();
+        RecordTable recordTable = new RecordTable();
+        recordTable.addRecord(new Record("Player1", 100));
+        recordTable.addRecord(new Record("Player2", 200));
+        recordTable.addRecord(new Record("Player3", 300));
+        ioController.saveRecordTable(recordTable);
+        RecordTable loadedRecordTable = ioController.loadRecordTable();
+        System.out.println(loadedRecordTable.getRecords());
     }
 }

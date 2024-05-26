@@ -1,8 +1,10 @@
 package ru.mephi.polundriks.lab5.model;
 
 import lombok.Getter;
+import lombok.ToString;
 
 @Getter
+@ToString
 public class Record {
     private String playerName;
     private int score;
