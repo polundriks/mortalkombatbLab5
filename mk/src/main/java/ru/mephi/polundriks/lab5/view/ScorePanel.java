@@ -7,20 +7,18 @@ import javax.swing.*;
 import java.awt.*;
 
 public class ScorePanel extends JPanel {
-    private GameController gameController;
-    private JLabel scoreLabel;
-    private JLabel levelLabel;
-    private JLabel healthLabel;
-    private JLabel attackLabel;
+    private final JLabel scoreLabel;
+    private final JLabel levelLabel;
+    private final JLabel healthLabel;
+    private final JLabel attackLabel;
 
     public ScorePanel(GameController gameController) {
-        this.gameController = gameController;
         setLayout(new GridLayout(4, 1));
 
         scoreLabel = new JLabel("Счет: 0");
         levelLabel = new JLabel("Уровень: 1");
-        healthLabel = new JLabel("Здоровье: 100");
-        attackLabel = new JLabel("Атака: 10");
+        healthLabel = new JLabel("Здоровье: " + gameController.getGameState().getPlayer().getHealth());
+        attackLabel = new JLabel("Атака: " + gameController.getGameState().getPlayer().getAttackDamage());
 
         add(scoreLabel);
         add(levelLabel);
@@ -28,7 +26,6 @@ public class ScorePanel extends JPanel {
         add(attackLabel);
     }
 
-    // Метод для обновления состояния панели
     public void update(GameState gameState) {
         scoreLabel.setText("Счет: " + gameState.getScore());
         levelLabel.setText("Уровень: " + gameState.getLevel());

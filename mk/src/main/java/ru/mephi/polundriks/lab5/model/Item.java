@@ -17,4 +17,9 @@ public class Item {
             case RESURRECTION_CROSS -> this.effect = ConfigManager.getIntProperty("item.resurrectionCrossEffect");
         }
     }
+
+    @Override
+    public String toString() {
+        return String.format(" %-20s \t\t %-10d ", type.getName(), effect);
+    }
 }

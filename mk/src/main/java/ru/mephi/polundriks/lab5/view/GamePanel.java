@@ -9,24 +9,22 @@ import javax.swing.*;
 import java.awt.*;
 
 public class GamePanel extends JPanel {
-    //private GameController gameController;
     private JLabel playerStats;
     private JLabel enemyStats;
-    private JTextArea gameLog;
+    //private JTextArea gameLog;
     private JButton attackButton;
     private JButton defendButton;
     private JButton skipButton;
 
     public GamePanel(GameController gameController) {
-        //this.gameController = gameController;
         setLayout(new BorderLayout());
 
         playerStats = new JLabel();
         enemyStats = new JLabel();
-        gameLog = new JTextArea();
+        /*gameLog = new JTextArea();
         gameLog.setEditable(false);
         gameLog.setLineWrap(true);
-        gameLog.setWrapStyleWord(true);
+        gameLog.setWrapStyleWord(true);*/
 
         JPanel statsPanel = new JPanel(new GridLayout(2, 1));
         statsPanel.add(playerStats);
@@ -58,7 +56,7 @@ public class GamePanel extends JPanel {
 
         add(statsPanel, BorderLayout.NORTH);
         add(actionsPanel, BorderLayout.SOUTH);
-        add(new JScrollPane(gameLog), BorderLayout.CENTER);
+        //add(new JScrollPane(gameLog), BorderLayout.CENTER);
 
         update(gameController.getGameState());
     }
@@ -68,14 +66,18 @@ public class GamePanel extends JPanel {
         Enemy enemy = gameState.getCurrentEnemy();
 
         playerStats.setText(String.format(
-            "<html>Игрок:<br/>" +
-                "Уровень: %d<br/>" +
-                "Здоровье: %d<br/>" +
-                "Урон: %d<br/>" +
-                "Опыт: %d<br/>" +
-                "Очки: %d<br/>" +
-                "Следующий уровень через: %d опыт<br/>" +
-                "</html>",
+            """
+                <html>Игрок:<br/>\
+                Локация: %d из %d<br/>\
+                Уровень: %d<br/>\
+                Здоровье: %d<br/>\
+                Урон: %d<br/>\
+                Опыт: %d<br/>\
+                Очки: %d<br/>\
+                Следующий уровень через: %d опыта<br/>\
+                </html>""",
+            gameState.getCurrentLocation(),
+            gameState.getTotalLocations(),
             player.getLevel(),
             player.getHealth(),
             player.getAttackDamage(),
@@ -85,11 +87,12 @@ public class GamePanel extends JPanel {
         ));
 
         enemyStats.setText(String.format(
-            "<html>Противник:<br/>" +
-                "Тип: %s (%s)<br/>" +
-                "Здоровье: %d<br/>" +
-                "Урон: %d<br/>" +
-                "</html>",
+            """
+                <html>Противник:<br/>\
+                Тип: %s (%s)<br/>\
+                Здоровье: %d<br/>\
+                Урон: %d<br/>\
+                </html>""",
             enemy.getType().name(),
             enemy.getType().getType().getStr(),
             enemy.getHealth(),
@@ -108,7 +111,7 @@ public class GamePanel extends JPanel {
     }
 
     public void clearGameLog() {
-        gameLog.setText("");
+        //gameLog.setText("");
     }
 
     public void enableActionButtons(boolean enabled) {

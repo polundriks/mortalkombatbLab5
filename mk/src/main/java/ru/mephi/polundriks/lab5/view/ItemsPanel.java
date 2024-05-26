@@ -13,7 +13,7 @@ public class ItemsPanel extends JFrame {
     private JButton useButton;
     private JButton closeButton;
 
-    public ItemsPanel(GameController gameController) {
+    public ItemsPanel(GameController gameController, Runnable updateGameInterface) {
         this.gameController = gameController;
         setTitle("Мешок предметов");
         setSize(300, 400);
@@ -33,6 +33,7 @@ public class ItemsPanel extends JFrame {
             if (selectedItem != null) {
                 gameController.useItem(selectedItem);
                 updateItemsList();
+                updateGameInterface.run();
             }
         });
         buttonsPanel.add(useButton);

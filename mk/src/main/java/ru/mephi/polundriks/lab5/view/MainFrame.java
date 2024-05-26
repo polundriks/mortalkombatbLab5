@@ -10,13 +10,17 @@ public class MainFrame extends JFrame {
     private RecordsFrame recordsFrame;
     private GamePanel gamePanel;
     private ScorePanel scorePanel;
+    private LocationsInputDialog locationsInputDialog;
 
     public MainFrame() {
         gameController = new GameController();
-        itemsPanel = new ItemsPanel(gameController);
+        itemsPanel = new ItemsPanel(gameController, () -> {
+            gamePanel.update(gameController.getGameState());
+        });
         recordsFrame = new RecordsFrame(gameController);
         gamePanel = new GamePanel(gameController);
         scorePanel = new ScorePanel(gameController);
+        locationsInputDialog = new LocationsInputDialog(gameController);
 
         setTitle("Игра");
         setSize(800, 600);
@@ -26,7 +30,8 @@ public class MainFrame extends JFrame {
         JButton startGameButton = new JButton("Начать игру");
         startGameButton.setBounds(50, 50, 200, 30);
         startGameButton.addActionListener(e -> {
-            gameController.startNewGame();
+            //gameController.startNewGame();
+            locationsInputDialog.setVisible(true);
             gamePanel.update(gameController.getGameState());
             scorePanel.update(gameController.getGameState());
             resetGameInterface();

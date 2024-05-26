@@ -16,6 +16,12 @@ public class GameState {
     private int defeatedEnemies;
     @Getter
     private int maxEnemies;
+    @Setter
+    @Getter
+    private int totalLocations;
+    @Setter
+    @Getter
+    private int currentLocation;
 
     public GameState() {
         player = new Player();
@@ -50,4 +56,9 @@ public class GameState {
         EnemyCharacter type = enemyTypes[(int) (Math.random() * enemyTypes.length)];
         currentEnemy = new Enemy(type, level);
     }
+
+    private void generateBoss() {
+        // todo Здесь добавить логику для генерации босса в конце каждой локации
+    }
+
 }

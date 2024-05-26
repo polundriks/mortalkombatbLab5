@@ -11,7 +11,12 @@ public class Enemy {
     private EnemyCharacter type;
     private EnemyBehavior behavior;
     private int behaviorStep;
+    @Setter
+    @Getter
     private boolean defending;
+    @Setter
+    @Getter
+    private int weakenedTurns;
 
     public Enemy(EnemyCharacter type, int playerLevel) {
         this.type = type;
@@ -80,13 +85,5 @@ public class Enemy {
             default:
                 return Action.ATTACK;
         }
-    }
-
-    public boolean isDefending() {
-        return defending;
-    }
-
-    public void setDefending(boolean defending) {
-        this.defending = defending;
     }
 }

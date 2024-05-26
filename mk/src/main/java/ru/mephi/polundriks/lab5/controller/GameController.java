@@ -27,12 +27,23 @@ public class GameController {
         recordTable = new RecordTable(); // todo ioController.loadRecordTable();
     }
 
-    public void startNewGame() {
+    public void startNewGame(int totalLocations) {
         gameState = new GameState();
+        gameState.setTotalLocations(totalLocations);
+        gameState.setCurrentLocation(1);
         playerTurn = true; // Игрок начинает первым
         playerStunned = false;
         enemyStunned = false;
         playerDefending = false;
+    }
+
+    public void moveToNextLocation() {
+        if (gameState.getCurrentLocation() < gameState.getTotalLocations()) {
+            gameState.setCurrentLocation(gameState.getCurrentLocation() + 1);
+        } else {
+            // Игра окончена, игрок прошел все локации
+            gameState.setGameOver(true);
+        }
     }
 
     public void playerAttack() {
@@ -51,16 +62,24 @@ public class GameController {
                 // Противник защищается, контрудар на 50% урона
                 player.setHealth(player.getHealth() - (enemy.getAttackDamage() / 2));
                 if (player.getHealth() <= 0) {
-                    gameState.setGameOver(true);
+                    moveToNextLocation();
                 }
                 enemy.setDefending(false);
             } else {
                 // Противник не защищается, игрок атакует
-                enemy.setHealth(enemy.getHealth() - player.getAttackDamage());
+                int damage = player.getAttackDamage();
+                if (enemy.getWeakenedTurns() > 0) {
+                    damage = (int) (damage * 1.25);
+                    enemy.setWeakenedTurns(enemy.getWeakenedTurns() - 1);
+                    if (enemy.getWeakenedTurns() == 0) {
+                        enemy.setAttackDamage(enemy.getAttackDamage() * 2);
+                    }
+                }
+                enemy.setHealth(enemy.getHealth() - damage);
                 if (enemy.getHealth() <= 0) {
                     gameState.setScore(gameState.getScore() + 100); // За победу над противником начисляются очки
                     gameState.setDefeatedEnemies(gameState.getDefeatedEnemies() + 1);
-                    dropItem();
+
                     if (gameState.getDefeatedEnemies() >= gameState.getMaxEnemies()) {
                         gameState.nextLevel();
                     } else {
@@ -68,6 +87,7 @@ public class GameController {
                     }
                 }
             }
+            dropItem();
             playerTurn = false;
             enemyRespond();
         }
@@ -84,6 +104,12 @@ public class GameController {
             }
 
             playerDefending = true;
+            if (gameState.getCurrentEnemy().isDefending()) {
+                // Если противник также защищается, есть 50% шанс оглушить его
+                if (new Random().nextBoolean()) {
+                    enemyStunned = true;
+                }
+            }
             playerTurn = false;
             enemyRespond();
         }
@@ -99,6 +125,45 @@ public class GameController {
                 return;
             }
 
+            playerTurn = false;
+            enemyRespond();
+        }
+    }
+
+    public void increasePlayerDamage() {
+        gameState.getPlayer().increasePlayerDamage();
+    }
+
+    public void increasePlayerHealth() {
+        gameState.getPlayer().increasePlayerMaxHealth();
+    }
+
+    public void playerWeaken() {
+        if (playerTurn) {
+            if (playerStunned) {
+                // Игрок оглушен, пропускает ход
+                playerStunned = false;
+                playerTurn = false;
+                enemyRespond();
+                return;
+            }
+
+            Player player = gameState.getPlayer();
+            Enemy enemy = gameState.getCurrentEnemy();
+            if (enemy.isDefending()) {
+                // Если противник защищается, есть 75% шанс нанести ему дебаф
+                if (new Random().nextInt(100) < 75) {
+                    enemy.setWeakenedTurns(player.getLevel());
+                    enemy.setAttackDamage(enemy.getAttackDamage() / 2);
+                    player.setAttackDamage((int) (player.getAttackDamage() * 1.25));
+                }
+            } else {
+                // Если противник атакует, ослабление срывается, а ослабитель получает дополнительный урон
+                player.setHealth((int) (player.getHealth() - enemy.getAttackDamage() * 1.15));
+                if (player.getHealth() <= 0) {
+                    moveToNextLocation();
+                }
+            }
             playerTurn = false;
             enemyRespond();
         }
@@ -137,12 +202,46 @@ public class GameController {
                         // Игрок не защищается, противник атакует
                         player.setHealth(player.getHealth() - enemy.getAttackDamage());
                         if (player.getHealth() <= 0) {
-                            gameState.setGameOver(true);
+                            moveToNextLocation();
                         }
                     }
                     break;
                 case DEFEND:
                     enemy.setDefending(true);
+                    if (playerDefending) {
+                        // Если игрок также защищается, есть 50% шанс оглушить его
+                        if (new Random().nextBoolean()) {
+                            playerStunned = true;
+                        }
+                    }
+                    break;
+
+                case WEAKEN:
+                    // свойство ослабления только у мага и игрока
+                    if (enemy.getType().getType() != EnemyType.WIZARD) {
+                        break;
+                    }
+                    if (playerDefending) {
+                        // Если игрок защищается, ослабление срывается, а ослабитель получает дополнительный урон
+                        enemy.setHealth((int) (enemy.getHealth() - player.getAttackDamage() * 1.15));
+                        if (enemy.getHealth() <= 0) {
+                            gameState.setScore(gameState.getScore() + 100); // За победу над противником начисляются очки
+                            gameState.setDefeatedEnemies(gameState.getDefeatedEnemies() + 1);
+
+                            if (gameState.getDefeatedEnemies() >= gameState.getMaxEnemies()) {
+                                gameState.nextLevel();
+                            } else {
+                                gameState.generateEnemy();
+                            }
+                        }
+                    } else {
+                        // Если игрок атакует, есть 75% шанс нанести ему дебаф
+                        if (new Random().nextInt(100) < 75) {
+                            player.setWeakenedTurns(1);
+                            player.setAttackDamage(player.getAttackDamage() / 2);
+                            enemy.setAttackDamage((int) (enemy.getAttackDamage() * 1.25));
+                        }
+                    }
                     break;
             }
 
@@ -182,6 +281,7 @@ public class GameController {
                 }
                 break;
         }
+        player.removeItem(item);
     }
 
     public void addRecord(String playerName, int score) {
