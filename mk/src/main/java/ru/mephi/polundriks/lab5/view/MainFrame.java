@@ -63,9 +63,6 @@ public class MainFrame extends JFrame {
     }
 
     private void resetGameInterface() {
-        // Очистить журнал игры
-        gamePanel.clearGameLog();
-
         // Включить кнопки действий
         gamePanel.enableActionButtons(true);
 

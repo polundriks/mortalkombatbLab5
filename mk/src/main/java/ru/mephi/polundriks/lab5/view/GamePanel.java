@@ -9,22 +9,18 @@ import javax.swing.*;
 import java.awt.*;
 
 public class GamePanel extends JPanel {
+    private JLabel locationLabel;
     private JLabel playerStats;
     private JLabel enemyStats;
-    //private JTextArea gameLog;
     private JButton attackButton;
     private JButton defendButton;
     private JButton skipButton;
 
     public GamePanel(GameController gameController) {
         setLayout(new BorderLayout());
-
+        locationLabel = new JLabel();
         playerStats = new JLabel();
         enemyStats = new JLabel();
-        /*gameLog = new JTextArea();
-        gameLog.setEditable(false);
-        gameLog.setLineWrap(true);
-        gameLog.setWrapStyleWord(true);*/
 
         JPanel statsPanel = new JPanel(new GridLayout(2, 1));
         statsPanel.add(playerStats);
@@ -56,7 +52,6 @@ public class GamePanel extends JPanel {
 
         add(statsPanel, BorderLayout.NORTH);
         add(actionsPanel, BorderLayout.SOUTH);
-        //add(new JScrollPane(gameLog), BorderLayout.CENTER);
 
         update(gameController.getGameState());
     }
@@ -64,11 +59,11 @@ public class GamePanel extends JPanel {
     public void update(GameState gameState) {
         Player player = gameState.getPlayer();
         Enemy enemy = gameState.getCurrentEnemy();
-
+        locationLabel.setText(String.format("Локация %d из %d",
+            gameState.getCurrentLocation(), gameState.getTotalLocations()));
         playerStats.setText(String.format(
             """
                 <html>Игрок:<br/>\
-                Локация: %d из %d<br/>\
                 Уровень: %d<br/>\
                 Здоровье: %d<br/>\
                 Урон: %d<br/>\
@@ -76,8 +71,6 @@ public class GamePanel extends JPanel {
                 Очки: %d<br/>\
                 Следующий уровень через: %d опыта<br/>\
                 </html>""",
-            gameState.getCurrentLocation(),
-            gameState.getTotalLocations(),
             player.getLevel(),
             player.getHealth(),
             player.getAttackDamage(),
@@ -99,19 +92,12 @@ public class GamePanel extends JPanel {
             enemy.getAttackDamage()
         ));
 
-        //gameLog.append("Игрок и противник обновлены\n");
-        //gameLog.setCaretPosition(gameLog.getDocument().getLength());
-
         if (gameState.isGameOver()) {
             JOptionPane.showMessageDialog(this, "Игра окончена! Вы набрали " + gameState.getScore() + " очков.");
             attackButton.setEnabled(false);
             defendButton.setEnabled(false);
             skipButton.setEnabled(false);
         }
-    }
-
-    public void clearGameLog() {
-        //gameLog.setText("");
     }
 
     public void enableActionButtons(boolean enabled) {

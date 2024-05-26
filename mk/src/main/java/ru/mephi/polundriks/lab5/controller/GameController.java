@@ -1,11 +1,13 @@
 package ru.mephi.polundriks.lab5.controller;
 
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import ru.mephi.polundriks.lab5.model.Record;
 import ru.mephi.polundriks.lab5.model.*;
 
 import java.util.Random;
 
+@Slf4j
 public class GameController {
     @Getter
     private GameState gameState;
@@ -16,6 +18,7 @@ public class GameController {
     private boolean playerStunned;
     private boolean enemyStunned;
     private boolean playerDefending;
+    //private StringJoiner gameLog;
 
     public GameController() {
         gameState = new GameState();
@@ -25,6 +28,7 @@ public class GameController {
         enemyStunned = false;
         playerDefending = false;
         recordTable = new RecordTable(); // todo ioController.loadRecordTable();
+        //gameLog = new StringJoiner("");
     }
 
     public void startNewGame(int totalLocations) {
@@ -47,45 +51,25 @@ public class GameController {
     }
 
     public void playerAttack() {
+        log.info("Игрок атакует с силой {}\n", gameState.getPlayer().getAttackDamage());
         if (playerTurn) {
             if (playerStunned) {
-                // Игрок оглушен, пропускает ход
-                playerStunned = false;
-                playerTurn = false;
-                enemyRespond();
+                skipTurn();
+                log.info("Игрок оглушен, пропускает ход\n");
                 return;
             }
 
             Player player = gameState.getPlayer();
             Enemy enemy = gameState.getCurrentEnemy();
             if (enemy.isDefending()) {
-                // Противник защищается, контрудар на 50% урона
-                player.setHealth(player.getHealth() - (enemy.getAttackDamage() / 2));
-                if (player.getHealth() <= 0) {
-                    moveToNextLocation();
-                }
-                enemy.setDefending(false);
+                counterAttack(player, enemy);
+                log.info("Противник защищается, игрок получает урон\n");
+            } else if (enemy.getNextAction() == Action.REGENERATE) {
+                interruptRegeneration(player, enemy);
+                log.info("Противник пытается регенерировать, игрок прерывает процесс\n");
             } else {
-                // Противник не защищается, игрок атакует
-                int damage = player.getAttackDamage();
-                if (enemy.getWeakenedTurns() > 0) {
-                    damage = (int) (damage * 1.25);
-                    enemy.setWeakenedTurns(enemy.getWeakenedTurns() - 1);
-                    if (enemy.getWeakenedTurns() == 0) {
-                        enemy.setAttackDamage(enemy.getAttackDamage() * 2);
-                    }
-                }
-                enemy.setHealth(enemy.getHealth() - damage);
-                if (enemy.getHealth() <= 0) {
-                    gameState.setScore(gameState.getScore() + 100); // За победу над противником начисляются очки
-                    gameState.setDefeatedEnemies(gameState.getDefeatedEnemies() + 1);
-
-                    if (gameState.getDefeatedEnemies() >= gameState.getMaxEnemies()) {
-                        gameState.nextLevel();
-                    } else {
-                        gameState.generateEnemy();
-                    }
-                }
+                attackEnemy(player, enemy);
+                log.info("Противник атакован\n");
             }
             dropItem();
             playerTurn = false;
@@ -93,7 +77,53 @@ public class GameController {
         }
     }
 
+    private void skipTurn() {
+        playerStunned = false;
+        playerTurn = false;
+        enemyRespond();
+    }
+
+    private void counterAttack(Player player, Enemy enemy) {
+        player.setHealth(player.getHealth() - (enemy.getAttackDamage() / 2));
+        if (player.getHealth() <= 0) {
+            moveToNextLocation();
+        }
+        enemy.setDefending(false);
+    }
+
+    private void interruptRegeneration(Player player, Enemy enemy) {
+        enemy.setHealth(enemy.getHealth() - (player.getAttackDamage() * 2));
+        checkEnemyHealth(enemy);
+    }
+
+    private void attackEnemy(Player player, Enemy enemy) {
+        int damage = player.getAttackDamage();
+        if (enemy.getWeakenedTurns() > 0) {
+            damage = (int) (damage * 1.25);
+            enemy.setWeakenedTurns(enemy.getWeakenedTurns() - 1);
+            if (enemy.getWeakenedTurns() == 0) {
+                enemy.setAttackDamage(enemy.getAttackDamage() * 2);
+            }
+        }
+        enemy.setHealth(enemy.getHealth() - damage);
+        checkEnemyHealth(enemy);
+    }
+
+    private void checkEnemyHealth(Enemy enemy) {
+        if (enemy.getHealth() <= 0) {
+            gameState.setScore(gameState.getScore() + 100); // За победу над противником начисляются очки
+            gameState.setDefeatedEnemies(gameState.getDefeatedEnemies() + 1);
+
+            if (gameState.getDefeatedEnemies() >= gameState.getMaxEnemies()) {
+                gameState.nextLevel();
+            } else {
+                gameState.generateEnemy();
+            }
+        }
+    }
+
     public void playerDefend() {
+        log.info("Игрок защищается\n");
         if (playerTurn) {
             if (playerStunned) {
                 // Игрок оглушен, пропускает ход
@@ -110,12 +140,18 @@ public class GameController {
                     enemyStunned = true;
                 }
             }
+            if (gameState.getCurrentEnemy().getNextAction() == Action.REGENERATE) {
+                // Если противник пытается регенерировать и игрок защищается, босс восстанавливает 50% от полученного на текущий момент урона
+                Enemy enemy = gameState.getCurrentEnemy();
+                enemy.setHealth((int) (enemy.getHealth() + (enemy.getMaxHealth() - enemy.getHealth()) * 0.5));
+            }
             playerTurn = false;
             enemyRespond();
         }
     }
 
     public void playerSkip() {
+        log.info("Игрок пропускает ход\n");
         if (playerTurn) {
             if (playerStunned) {
                 // Игрок оглушен, пропускает ход
@@ -173,9 +209,11 @@ public class GameController {
         if (!playerTurn) {
             if (!enemyStunned) {
                 enemyTurn();
+                log.info("Ход противника\n");
             } else {
                 enemyStunned = false;
                 playerTurn = true;
+                log.info("Противник оглушен, пропускает ход\n");
             }
         }
     }
@@ -243,6 +281,13 @@ public class GameController {
                         }
                     }
                     break;
+                case REGENERATE:
+                    // Босс пытается регенерировать здоровье
+                    if (playerDefending) {
+                        // Если игрок защищается, босс восстанавливает 50% от полученного на текущий момент урона
+                        enemy.setHealth((int) (enemy.getHealth() + (enemy.getMaxHealth() - enemy.getHealth()) * 0.5));
+                    }
+                    break;
             }
 
             playerTurn = true;
@@ -262,16 +307,14 @@ public class GameController {
         }
         if (item != null) {
             gameState.getPlayer().addItem(item);
+            log.info("Игрок получает предмет: " + item.getType().getName() + "\n");
         }
     }
 
     public void useItem(Item item) {
         Player player = gameState.getPlayer();
         switch (item.getType()) {
-            case SMALL_HEALTH_POTION:
-                player.setHealth(player.getHealth() + item.getEffect());
-                break;
-            case LARGE_HEALTH_POTION:
+            case SMALL_HEALTH_POTION, LARGE_HEALTH_POTION:
                 player.setHealth(player.getHealth() + item.getEffect());
                 break;
             case RESURRECTION_CROSS:

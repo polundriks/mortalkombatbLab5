@@ -11,12 +11,9 @@ public class Enemy {
     private EnemyCharacter type;
     private EnemyBehavior behavior;
     private int behaviorStep;
-    @Setter
-    @Getter
     private boolean defending;
-    @Setter
-    @Getter
     private int weakenedTurns;
+    private int maxHealth;
 
     public Enemy(EnemyCharacter type, int playerLevel) {
         this.type = type;
@@ -28,9 +25,9 @@ public class Enemy {
     }
 
     private int calculateHealth(EnemyCharacter type, int playerLevel) {
-        int baseHealth = ConfigManager.getIntProperty(type.name().toLowerCase(), "initialHealth");
+        maxHealth = ConfigManager.getIntProperty(type.name().toLowerCase(), "initialHealth");
         int levelUpHealthIncrement = ConfigManager.getIntProperty(type.name().toLowerCase(), "levelUpHealthIncrement");
-        return baseHealth + (playerLevel * levelUpHealthIncrement);
+        return maxHealth + (playerLevel * levelUpHealthIncrement);
     }
 
     private int calculateAttackDamage(EnemyCharacter type, int playerLevel) {
