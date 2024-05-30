@@ -9,7 +9,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
-        <exec.mainClass>ru.mephi.polundriks.lab5.Lab5</exec.mainClass>
+        <exec.mainClass>mephi.lab5.Lab5</exec.mainClass>
     </properties>
     <dependencies>
         <dependency>
@@ -85,7 +85,7 @@
                     </descriptorRefs>
                     <archive>
                         <manifest>
-                            <mainClass>ru.mephi.polundriks.lab5.Lab5</mainClass>
+                            <mainClass>mephi.lab5.Lab5</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
