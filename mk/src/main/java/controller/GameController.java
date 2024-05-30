@@ -1,10 +1,17 @@
-package mephi.lab5.controller;
+package controller;
 
+import model.RecordTable;
+import model.ItemType;
+import model.EnemyType;
+import model.Player;
+import model.Item;
+import model.Action;
+import model.Enemy;
+import model.GameState;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import mephi.lab5.model.*;
-import mephi.lab5.model.Record;
+import model.Record;
 
 import java.util.Random;
 

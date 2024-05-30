@@ -1,6 +1,6 @@
-package mephi.lab5;
+package lab5;
 
-import mephi.lab5.view.MainFrame;
+import view.MainFrame;
 
 public class Lab5 {
 

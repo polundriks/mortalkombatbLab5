@@ -1,7 +1,7 @@
-package mephi.lab5.view;
+package view;
 
-import mephi.lab5.controller.GameController;
-import mephi.lab5.model.Item;
+import controller.GameController;
+import model.Item;
 
 import javax.swing.*;
 import java.awt.*;

@@ -1,4 +1,4 @@
-package mephi.lab5.model;
+package model;
 
 public enum EnemyBehavior {
     TYPE_1, // случайно 1 или 2 атаки – защита

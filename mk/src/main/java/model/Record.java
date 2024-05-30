@@ -1,4 +1,4 @@
-package mephi.lab5.model;
+package model;
 
 import lombok.Getter;
 import lombok.ToString;

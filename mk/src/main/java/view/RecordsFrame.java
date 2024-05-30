@@ -1,8 +1,8 @@
-package mephi.lab5.view;
+package view;
 
-import mephi.lab5.controller.GameController;
-import mephi.lab5.model.Record;
-import mephi.lab5.model.RecordTable;
+import controller.GameController;
+import model.Record;
+import model.RecordTable;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;

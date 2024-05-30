@@ -1,8 +1,8 @@
-package mephi.lab5.model;
+package model;
 
 import lombok.Getter;
 
-import static mephi.lab5.model.EnemyType.*;
+import static model.EnemyType.*;
 
 @Getter
 public enum EnemyCharacter {

@@ -1,4 +1,4 @@
-package mephi.lab5.model;
+package model;
 
 public enum Action {
     ATTACK,

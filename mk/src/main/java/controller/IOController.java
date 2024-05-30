@@ -1,12 +1,12 @@
-package mephi.lab5.controller;
+package controller;
 
-import mephi.lab5.model.RecordTable;
+import model.RecordTable;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import mephi.lab5.model.Record;
+import model.Record;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;

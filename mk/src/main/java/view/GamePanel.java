@@ -1,10 +1,10 @@
-package mephi.lab5.view;
+package view;
 
 import lombok.extern.slf4j.Slf4j;
-import mephi.lab5.controller.GameController;
-import mephi.lab5.model.Enemy;
-import mephi.lab5.model.GameState;
-import mephi.lab5.model.Player;
+import controller.GameController;
+import model.Enemy;
+import model.GameState;
+import model.Player;
 
 import javax.swing.*;
 import java.awt.*;
