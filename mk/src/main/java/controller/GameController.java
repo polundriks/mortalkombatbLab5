@@ -71,7 +71,7 @@ public class GameController {
         if (gameState.getCurrentLocation() < gameState.getTotalLocations()) {
             gameState.setCurrentLocation(gameState.getCurrentLocation() + 1);
             gameState.nextLocation();
-            log.info("Переходим к локации {}", gameState.getCurrentLocation());
+            log.info("Go to location {}", gameState.getCurrentLocation());
         } else {
             // Игра окончена, игрок прошел все локации
             gameState.setGameOver(true);
@@ -82,11 +82,11 @@ public class GameController {
      * Метод playerAttack выполняет атаку игрока.
      */
     public void playerAttack() {
-        log.info("Игрок атакует с силой {}\n", gameState.getPlayer().getAttackDamage());
+        log.info("The player attacks with force {}\n", gameState.getPlayer().getAttackDamage());
         if (playerTurn) {
             if (playerStunned) {
                 skipTurn();
-                log.info("Игрок оглушен, пропускает ход");
+                log.info("Player is stunned and misses a turn");
                 return;
             }
             Player player = gameState.getPlayer();
@@ -95,10 +95,10 @@ public class GameController {
                 counterAttack(player, enemy);
             } else if (enemy.getNextAction() == Action.REGENERATE) {
                 interruptRegeneration(player, enemy);
-                log.info("Противник пытается регенерировать, игрок прерывает процесс");
+                log.info("The enemy tries to regenerate, the player interrupts the process");
             } else {
                 attackEnemy(player, enemy);
-                log.info("Противник атакован");
+                log.info("The enemy is attacked");
             }
             dropItem();
             playerTurn = false;
@@ -113,7 +113,7 @@ public class GameController {
     }
 
     private void counterAttack(Player player, Enemy enemy) {
-        log.info("Противник контратакует с уроном {}", enemy.getAttackDamage() / 2);
+        log.info("The enemy counterattacks with damage {}", enemy.getAttackDamage() / 2);
         player.setHealth(player.getHealth() - (enemy.getAttackDamage() / 2));
         if (player.getHealth() <= 0) {
             moveToNextLocation();
@@ -139,7 +139,7 @@ public class GameController {
 
     private void checkEnemyHealth(Enemy enemy) {
         if (enemy.getHealth() <= 0) {
-            gameState.setScore(gameState.getScore() + 100); // За победу над противником начисляются очки
+            gameState.setScore(gameState.getScore() + 100); 
             gameState.setDefeatedEnemies(gameState.getDefeatedEnemies() + 1);
 
             if (gameState.getDefeatedEnemies() >= gameState.getMaxEnemies()) {
@@ -155,7 +155,7 @@ public class GameController {
      * Метод playerDefend выполняет защиту игрока.
      */
     public void playerDefend() {
-        log.info("Игрок защищается");
+        log.info("Player defends");
         if (playerTurn) {
             if (playerStunned) {
                 // Игрок оглушен, пропускает ход
@@ -186,7 +186,7 @@ public class GameController {
      * Метод playerSkip пропускает ход игрока.
      */
     public void playerSkip() {
-        log.info("Игрок пропускает ход");
+        log.info("The player misses a turn");
         if (playerTurn) {
             if (playerStunned) {
                 // Игрок оглушен, пропускает ход
@@ -206,7 +206,7 @@ public class GameController {
      */
     public void increasePlayerDamage() {
         gameState.getPlayer().increasePlayerDamage();
-        log.info("Игрок выбрал увеличение атаки: {} при переходе на уровень: {}",
+        log.info("The player chose to increase attack: {} when moving to a level: {}",
             gameState.getPlayer().getAttackDamage(), gameState.getPlayer().getLevel());
     }
 
@@ -215,19 +215,19 @@ public class GameController {
      */
     public void increasePlayerHealth() {
         gameState.getPlayer().increasePlayerMaxHealth();
-        log.info("Игрок выбрал увеличение здоровья: {} при переходе на уровень: {}",
+        log.info("The player chose to increase health: {} when moving to a level: {}",
             gameState.getPlayer().getMaxHealth(), gameState.getPlayer().getLevel());
     }
 
     public void playerWeaken() {
         if (playerTurn) {
-            log.info("Игрок пытается ослабить противника");
+            log.info("The player is trying to weaken the enemy");
             if (playerStunned) {
                 // Игрок оглушен, пропускает ход
                 playerStunned = false;
                 playerTurn = false;
                 enemyRespond();
-                log.info("Игрок не смог ослабить противника, т.к. он сам оглушен");
+                log.info("The player was unable to weaken the enemy because he was stunned");
                 return;
             }
 
@@ -239,12 +239,12 @@ public class GameController {
                     enemy.setWeakenedTurns(player.getLevel());
                     //enemy.setAttackDamage(enemy.getAttackDamage() / 2);
                     //player.setAttackDamage((int) (player.getAttackDamage() * 1.25));
-                    log.info("Противник ослаблен на 50%, игрок усилен на 25%");
+                    log.info("The enemy is weakened by 50%, the player is strengthened by 25%");
                 }
             } else {
                 // Если противник атакует, ослабление срывается, а игрок получает дополнительный урон
                 player.setHealth((int) (player.getHealth() - enemy.getAttackDamage() * 1.15));
-                log.info("Игрок получил дополнительный урон {}", enemy.getAttackDamage() * 1.15);
+                log.info("The player received additional damage {}", enemy.getAttackDamage() * 1.15);
                 if (player.getHealth() <= 0) {
                     moveToNextLocation();
                 }
@@ -257,12 +257,12 @@ public class GameController {
     private void enemyRespond() {
         if (!playerTurn) {
             if (!enemyStunned) {
-                log.info("Ход противника");
+                log.info("Enemy's move");
                 enemyTurn();
             } else {
                 enemyStunned = false;
                 playerTurn = true;
-                log.info("Противник оглушен, пропускает ход");
+                log.info("The enemy is stunned and misses a turn");
             }
         }
     }
@@ -273,18 +273,18 @@ public class GameController {
             Enemy enemy = gameState.getCurrentEnemy();
             Action enemyAction = enemy.getNextAction();
 
-            log.info("Противник выбрал действие: {}\n", enemyAction);
+            log.info("The enemy has chosen an action: {}\n", enemyAction);
 
             switch (enemyAction) {
                 case ATTACK:
                     if (playerDefending) {
                         // Игрок защищается, атака противника не происходит
                         playerDefending = false;
-                        log.info("Игрок защищается, противник пропускает ход");
+                        log.info("The player defends, the enemy misses a move");
                     } else {
                         // Игрок не защищается, противник атакует
                         player.setHealth(player.getHealth() - enemy.getAttackDamage());
-                        log.info("Игрок атакован");
+                        log.info("Player is attacked");
                         if (player.getHealth() <= 0) {
                             moveToNextLocation();
                         }
@@ -296,23 +296,23 @@ public class GameController {
                         // Если игрок также защищается, есть 50% шанс оглушить его
                         if (new Random().nextBoolean()) {
                             playerStunned = true;
-                            log.info("Игрок оглушен");
+                            log.info("Player is stunned");
                         }
                     }
                     break;
                 case WEAKEN:
-                    // свойство ослабления только у мага и игрока
+                
                     if (enemy.getType().getType() != EnemyType.WIZARD) {
-                        log.info("Противник не может ослабить игрока (Действие недоступно для {})\n",
+                        log.info("The enemy cannot weaken the player (Action not available for {})\n",
                             enemy.getType().getType().getStr());
                         break;
                     }
                     if (playerDefending) {
                         // Если игрок защищается, ослабление срывается, а ослабитель получает дополнительный урон
                         enemy.setHealth((int) (enemy.getHealth() - player.getAttackDamage() * 1.15));
-                        log.info("Противник получил дополнительный урон за попытку ослабить игрока");
+                        log.info("The enemy received additional damage for trying to weaken the player");
                         if (enemy.getHealth() <= 0) {
-                            gameState.setScore(gameState.getScore() + 100); // За победу над противником начисляются очки
+                            gameState.setScore(gameState.getScore() + 100); 
                             gameState.setDefeatedEnemies(gameState.getDefeatedEnemies() + 1);
 
                             if (gameState.getDefeatedEnemies() >= gameState.getMaxEnemies()) {
@@ -328,7 +328,7 @@ public class GameController {
                             player.setWeakenedTurns(1);
                             //player.setAttackDamage(player.getAttackDamage() / 2);
                             //enemy.setAttackDamage((int) (enemy.getAttackDamage() * 1.25));
-                            log.info("Противник ослабил игрока");
+                            log.info("The enemy has weakened the player");
                         }
                     }
                     break;
@@ -337,7 +337,7 @@ public class GameController {
                     if (playerDefending) {
                         // Если игрок защищается, босс восстанавливает 50% от полученного на текущий момент урона
                         enemy.setHealth((int) (enemy.getHealth() + (enemy.getMaxHealth() - enemy.getHealth()) * 0.5));
-                        log.info("Босс регенерирует здоровье на 50% от полученного на текущий момент урона");
+                        log.info("The boss regenerates health by 50% of the damage currently received");
                     }
                     break;
             }
@@ -359,7 +359,7 @@ public class GameController {
         }
         if (item != null) {
             gameState.getPlayer().addItem(item);
-            log.info("Игрок получает предмет: {}", item.getType().getName());
+            log.info("The player receives an item: {}", item.getType().getName());
         }
     }
 
@@ -382,7 +382,7 @@ public class GameController {
                 break;
         }
         player.removeItem(item);
-        log.info("игрок использовал предмет '{}'", item);
+        log.info("The player used the item '{}'", item);
     }
 
     /**

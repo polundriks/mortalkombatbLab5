@@ -45,7 +45,7 @@ public class GameState {
         defeatedEnemies = 0;
         player.spawnInNewLocation();
         maxEnemies = getMaxEnemiesForLevel(level);
-        log.info("Игрок перешел на уровень {} с {} врагами", level, maxEnemies);
+        log.info("The player has entered level {} with {} enemies", level, maxEnemies);
         if (level == 3 || level == 5) {
             generateBoss();
         } else {
@@ -72,7 +72,7 @@ public class GameState {
             EnemyCharacter[] enemyTypes = EnemyCharacter.values();
             EnemyCharacter type = enemyTypes[(int) (Math.random() * (enemyTypes.length - 1))];
             currentEnemy = new Enemy(type, level);
-            log.info("Сгенерирован противник {}", currentEnemy);
+            log.info("Enemy generated {}", currentEnemy);
         }
     }
 
@@ -80,6 +80,6 @@ public class GameState {
         currentEnemy = new Enemy(EnemyCharacter.SHAO_KAHN, level);
         currentEnemy.setMaxHealth(player.getHealth() / 2);
         currentEnemy.setHealth(currentEnemy.getMaxHealth());
-        log.info("Сгенерирован босс {}", currentEnemy);
+        log.info("Boss generated {}", currentEnemy);
     }
 }

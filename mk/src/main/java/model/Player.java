@@ -57,7 +57,7 @@ public class Player {
 
     public void setHealth(int health) {
         if (health < 0) {
-            log.info("Победа противника");
+            log.info("Victory of enemy");
             this.health = 0;
         } else if (health > maxHealth) {
             this.health = maxHealth;

@@ -101,7 +101,7 @@ public class Enemy {
 
     public void setHealth(int health) {
         if (health <= 0) {
-            log.info("Победа Игрока");
+            log.info("Victory of Player");
         }
         this.health = health;
     }
