@@ -17,9 +17,9 @@ public class RecordTable {
 
     public void addRecord(Record record) {
         records.add(record);
-        records.sort((r1, r2) -> Integer.compare(r2.getScore(), r1.getScore())); // Сортировка по убыванию очков
+        records.sort((r1, r2) -> Integer.compare(r2.getScore(), r1.getScore())); 
         if (records.size() > 10) {
-            records = records.subList(0, 10); // Оставляем только топ 10
+            records = records.subList(0, 10); 
         }
     }
 }

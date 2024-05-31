@@ -55,7 +55,7 @@ public class MainFrame extends JFrame {
         });
         add(itemsButton);
 
-        // Добавить игровые панели
+       
         gamePanel.setBounds(300, 50, 450, 300);
         add(gamePanel);
 
@@ -64,10 +64,8 @@ public class MainFrame extends JFrame {
     }
 
     private void resetGameInterface() {
-        // Включить кнопки действий
         gamePanel.enableActionButtons(true);
 
-        // Обновить отображение
         gamePanel.update(gameController.getGameState());
         scorePanel.update(gameController.getGameState());
     }

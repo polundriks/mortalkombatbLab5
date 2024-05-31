@@ -60,7 +60,7 @@ public class GameState {
             case 3 -> 7;
             case 4 -> 9;
             case 5 -> 12;
-            default -> 15; // На последних уровнях количество противников не увеличивается
+            default -> 15; 
         };
     }
 
@@ -78,7 +78,6 @@ public class GameState {
 
     private void generateBoss() {
         currentEnemy = new Enemy(EnemyCharacter.SHAO_KAHN, level);
-        // имеет 50% здоровья от общего количества здоровья игрока
         currentEnemy.setMaxHealth(player.getHealth() / 2);
         currentEnemy.setHealth(currentEnemy.getMaxHealth());
         log.info("Сгенерирован босс {}", currentEnemy);

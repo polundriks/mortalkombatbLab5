@@ -19,8 +19,6 @@ public class RecordsFrame extends JFrame {
         setTitle("Таблица рекордов");
         setSize(400, 300);
         setLayout(new BorderLayout());
-
-        // Загрузка предыдущих результатов из файла Excel
         RecordTable recordTable = gameController.getIoController().loadRecordTable();
         gameController.setRecordTable(recordTable);
 

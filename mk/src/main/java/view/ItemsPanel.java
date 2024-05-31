@@ -46,6 +46,7 @@ public class ItemsPanel extends JFrame {
         buttonsPanel.add(useButton);
 
         itemsList.addMouseListener(new MouseAdapter() {
+            @Override
             public void mouseClicked(MouseEvent e) {
                 if (e.getClickCount() == 2) {
                     useSelectedItem(updateGuiCallback);
