@@ -12,7 +12,7 @@ public class LevelUpDialog extends JDialog {
     public LevelUpDialog(GameController gameController) {
         setModal(true);
         setTitle("Повышение уровня");
-        setSize(200, 100);
+        setSize(600, 200);
         setLayout(new FlowLayout());
 
         increaseDamageButton = new JButton("Увеличить урон");

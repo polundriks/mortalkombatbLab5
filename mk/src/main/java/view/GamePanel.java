@@ -128,6 +128,7 @@ public class GamePanel extends JPanel {
             attackButton.setEnabled(false);
             defendButton.setEnabled(false);
             skipButton.setEnabled(false);
+            weakenButton.setEnabled(false);
         }
         updateScoreCallback.run();
     }

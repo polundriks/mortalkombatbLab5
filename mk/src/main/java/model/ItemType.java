@@ -4,9 +4,9 @@ import lombok.Getter;
 
 @Getter
 public enum ItemType {
-    SMALL_HEALTH_POTION("Малое зелье лечение"),
-    LARGE_HEALTH_POTION("Большое зелье лечение"),
-    RESURRECTION_CROSS("Крест воскрешения");
+    SMALL_HEALTH_POTION("Small health potion"),
+    LARGE_HEALTH_POTION("Large health potion"),
+    RESURRECTION_CROSS("Resurrection cross");
 
     private final String name;
 

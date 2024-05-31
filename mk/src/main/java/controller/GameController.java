@@ -218,7 +218,7 @@ public class GameController {
         log.info("The player chose to increase health: {} when moving to a level: {}",
             gameState.getPlayer().getMaxHealth(), gameState.getPlayer().getLevel());
     }
-
+    
     public void playerWeaken() {
         if (playerTurn) {
             log.info("The player is trying to weaken the enemy");

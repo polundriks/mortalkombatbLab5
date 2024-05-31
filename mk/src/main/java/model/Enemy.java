@@ -14,6 +14,7 @@ import java.util.StringJoiner;
 @Getter
 @Setter
 public class Enemy {
+
     private int health;
     private int attackDamage;
     private BufferedImage imageBuffer;
@@ -54,22 +55,41 @@ public class Enemy {
     private EnemyBehavior determineBehavior(EnemyCharacter type) {
         double random = Math.random();
         switch (type) {
-            case BARAKA: // Танк
-                if (random < 0.3) return EnemyBehavior.TYPE_1;
-                if (random < 0.9) return EnemyBehavior.TYPE_2;
+            case BARAKA -> {
+                // Танк
+                if (random < 0.3) {
+                    return EnemyBehavior.TYPE_1;
+                }
+                if (random < 0.9) {
+                    return EnemyBehavior.TYPE_2;
+                }
                 return EnemyBehavior.TYPE_3;
-            case SUB_ZERO: // Маг
+            }
+            case SUB_ZERO -> {
+                // Маг
                 return random < 0.5 ? EnemyBehavior.TYPE_1 : EnemyBehavior.TYPE_3;
-            case LIU_KANG: // Боец
-                if (random < 0.25) return EnemyBehavior.TYPE_1;
-                if (random < 0.35) return EnemyBehavior.TYPE_2;
+            }
+            case LIU_KANG -> {
+                // Боец
+                if (random < 0.25) {
+                    return EnemyBehavior.TYPE_1;
+                }
+                if (random < 0.35) {
+                    return EnemyBehavior.TYPE_2;
+                }
                 return EnemyBehavior.TYPE_3;
-            case SONYA_BLADE: // Солдат
+            }
+            case SONYA_BLADE -> {
+                // Солдат
                 return random < 0.5 ? EnemyBehavior.TYPE_1 : EnemyBehavior.TYPE_2;
-            case SHAO_KAHN: // Босс
+            }
+            case SHAO_KAHN -> {
+                // Босс
                 return EnemyBehavior.TYPE_3;
-            default:
+            }
+            default -> {
                 return EnemyBehavior.TYPE_1;
+            }
         }
     }
 
@@ -109,9 +129,9 @@ public class Enemy {
     @Override
     public String toString() {
         return new StringJoiner(", ", Enemy.class.getSimpleName() + "[", "]")
-            .add("attackDamage=" + attackDamage)
-            .add("type=" + type)
-            .add("maxHealth=" + maxHealth)
-            .toString();
+                .add("attackDamage=" + attackDamage)
+                .add("type=" + type)
+                .add("maxHealth=" + maxHealth)
+                .toString();
     }
 }

@@ -61,17 +61,4 @@ public class IOController {
 
         return recordTable;
     }
-
-    // test
-    public static void main(String[] args) {
-        // test
-        IOController ioController = new IOController();
-        RecordTable recordTable = new RecordTable();
-        recordTable.addRecord(new Record("Player1", 100));
-        recordTable.addRecord(new Record("Player2", 200));
-        recordTable.addRecord(new Record("Player3", 300));
-        ioController.saveRecordTable(recordTable);
-        RecordTable loadedRecordTable = ioController.loadRecordTable();
-        System.out.println(loadedRecordTable.getRecords());
-    }
 }
