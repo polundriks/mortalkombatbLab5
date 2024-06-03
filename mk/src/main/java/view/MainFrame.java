@@ -3,70 +3,49 @@ package view;
 import controller.GameController;
 
 import javax.swing.*;
+import java.awt.*;
 
 public class MainFrame extends JFrame {
     private GameController gameController;
-    private ItemsPanel itemsPanel;
-    private RecordsFrame recordsFrame;
-    private GamePanel gamePanel;
-    private ScorePanel scorePanel;
-    private LocationsInputDialog locationsInputDialog;
+    private JPanel mainPanel;
+    private JButton startGameButton;
+    private JButton showRecordsButton;
     private LevelUpDialog levelUpDialog;
 
     public MainFrame() {
-        gameController = new GameController(
-            () -> levelUpDialog.setVisible(true));
+        gameController = new GameController(() -> levelUpDialog.setVisible(true));
         levelUpDialog = new LevelUpDialog(gameController);
-
-        itemsPanel = new ItemsPanel(gameController, () -> gamePanel.update(gameController.getGameState()));
-        recordsFrame = new RecordsFrame(gameController);
-        scorePanel = new ScorePanel(gameController);
-        gamePanel = new GamePanel(gameController, () -> scorePanel.update(gameController.getGameState()));
-        locationsInputDialog = new LocationsInputDialog(gameController);
 
         setTitle("Игра");
         setSize(800, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLayout(null);
+        setLayout(new BorderLayout());
 
-        JButton startGameButton = new JButton("Начать игру");
-        startGameButton.setBounds(50, 50, 200, 30);
-        startGameButton.addActionListener(e -> {
-            locationsInputDialog.setVisible(true);
-            //gamePanel.update(gameController.getGameState());
-            scorePanel.update(gameController.getGameState());
-            resetGameInterface();
-        });
-        add(startGameButton);
+        mainPanel = new JPanel();
+        mainPanel.setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridwidth = GridBagConstraints.REMAINDER;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.insets = new Insets(10, 10, 10, 10);
 
-        JButton showRecordsButton = new JButton("Посмотреть результаты");
-        showRecordsButton.setBounds(50, 100, 200, 30);
-        showRecordsButton.addActionListener(e -> {
-            recordsFrame.updateRecordsTable();
-            recordsFrame.setVisible(true);
-        });
-        add(showRecordsButton);
+        startGameButton = new JButton("Начать игру");
+        startGameButton.addActionListener(e -> showNewGameDialog());
+        mainPanel.add(startGameButton, gbc);
 
-        JButton itemsButton = new JButton("Предметы");
-        itemsButton.setBounds(50, 150, 200, 30);
-        itemsButton.addActionListener(e -> {
-            itemsPanel.updateItemsList();
-            itemsPanel.setVisible(true);
-        });
-        add(itemsButton);
+        showRecordsButton = new JButton("Посмотреть результаты");
+        showRecordsButton.addActionListener(e -> showRecordsFrame());
+        mainPanel.add(showRecordsButton, gbc);
 
-       
-        gamePanel.setBounds(300, 50, 450, 300);
-        add(gamePanel);
-
-        scorePanel.setBounds(300, 370, 450, 150);
-        add(scorePanel);
+        add(mainPanel, BorderLayout.CENTER);
     }
 
-    private void resetGameInterface() {
-        gamePanel.enableActionButtons(true);
+    private void showNewGameDialog() {
+        NewGameDialog newGameDialog = new NewGameDialog(this, gameController);
+        newGameDialog.setVisible(true);
+    }
 
-        gamePanel.update(gameController.getGameState());
-        scorePanel.update(gameController.getGameState());
+    private void showRecordsFrame() {
+        RecordsFrame recordsFrame = new RecordsFrame(gameController);
+        recordsFrame.setVisible(true);
     }
 }

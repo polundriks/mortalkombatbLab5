@@ -12,11 +12,19 @@ public class LevelUpDialog extends JDialog {
     public LevelUpDialog(GameController gameController) {
         setModal(true);
         setTitle("Повышение уровня");
-        setSize(600, 200);
-        setLayout(new FlowLayout());
+        setSize(300, 200);
+        setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
 
-        increaseDamageButton = new JButton("Увеличить урон");
-        increaseHealthButton = new JButton("Увеличить здоровье");
+        JLabel messageLabel = new JLabel("Выберите характеристику для улучшения:");
+        messageLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        int levelUpAttackDamageIncrement = gameController.getGameState().getPlayer().getLevelUpAttackDamageIncrement();
+        increaseDamageButton = new JButton("Увеличить урон на " + levelUpAttackDamageIncrement);
+        increaseDamageButton.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        int levelUpHealthIncrement = gameController.getGameState().getPlayer().getLevelUpHealthIncrement();
+        increaseHealthButton = new JButton("Увеличить здоровье на " + levelUpHealthIncrement);
+        increaseHealthButton.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         increaseDamageButton.addActionListener(e -> {
             gameController.increasePlayerDamage();
@@ -28,8 +36,12 @@ public class LevelUpDialog extends JDialog {
             setVisible(false);
         });
 
-        add(new JLabel("Выберите характеристику для улучшения:"));
+        add(Box.createRigidArea(new Dimension(0, 10))); // Отступ сверху
+        add(messageLabel);
+        add(Box.createRigidArea(new Dimension(0, 10))); // Отступ между элементами
         add(increaseDamageButton);
+        add(Box.createRigidArea(new Dimension(0, 10))); // Отступ между элементами
         add(increaseHealthButton);
+        add(Box.createRigidArea(new Dimension(0, 10))); // Отступ снизу
     }
 }

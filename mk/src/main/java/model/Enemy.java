@@ -1,5 +1,9 @@
 package model;
 
+import controller.strategy.DefendAttackDefendStrategy;
+import controller.strategy.EnemyBehaviorStrategy;
+import controller.strategy.FourAttacksStrategy;
+import controller.strategy.RandomAttackDefendStrategy;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -14,12 +18,11 @@ import java.util.StringJoiner;
 @Getter
 @Setter
 public class Enemy {
-
     private int health;
     private int attackDamage;
     private BufferedImage imageBuffer;
     private EnemyCharacter type;
-    private EnemyBehavior behavior;
+    private EnemyBehaviorStrategy behaviorStrategy;
     private int behaviorStep;
     private boolean defending;
     private int weakenedTurns;
@@ -35,7 +38,7 @@ public class Enemy {
         this.type = type;
         this.health = calculateHealth(type, playerLevel);
         this.attackDamage = calculateAttackDamage(type, playerLevel);
-        this.behavior = determineBehavior(type);
+        determineBehavior(type);
         this.behaviorStep = 0;
         this.defending = false;
     }
@@ -52,71 +55,44 @@ public class Enemy {
         return baseAttackDamage + (playerLevel * levelUpAttackDamageIncrement);
     }
 
-    private EnemyBehavior determineBehavior(EnemyCharacter type) {
+    private void determineBehavior(EnemyCharacter type) {
         double random = Math.random();
-        switch (type) {
+        behaviorStrategy = switch (type) {
             case BARAKA -> {
                 // Танк
                 if (random < 0.3) {
-                    return EnemyBehavior.TYPE_1;
+                    yield new RandomAttackDefendStrategy();
                 }
                 if (random < 0.9) {
-                    return EnemyBehavior.TYPE_2;
+                    yield new DefendAttackDefendStrategy();
+                } else {
+                    yield new FourAttacksStrategy();
                 }
-                return EnemyBehavior.TYPE_3;
             }
-            case SUB_ZERO -> {
-                // Маг
-                return random < 0.5 ? EnemyBehavior.TYPE_1 : EnemyBehavior.TYPE_3;
-            }
+            case SUB_ZERO -> // Маг
+                random < 0.5 ? new RandomAttackDefendStrategy() : new FourAttacksStrategy();
             case LIU_KANG -> {
                 // Боец
                 if (random < 0.25) {
-                    return EnemyBehavior.TYPE_1;
+                    yield new RandomAttackDefendStrategy();
                 }
                 if (random < 0.35) {
-                    return EnemyBehavior.TYPE_2;
+                    yield new DefendAttackDefendStrategy();
+                } else {
+                    yield new FourAttacksStrategy();
                 }
-                return EnemyBehavior.TYPE_3;
             }
-            case SONYA_BLADE -> {
-                // Солдат
-                return random < 0.5 ? EnemyBehavior.TYPE_1 : EnemyBehavior.TYPE_2;
-            }
-            case SHAO_KAHN -> {
-                // Босс
-                return EnemyBehavior.TYPE_3;
-            }
-            default -> {
-                return EnemyBehavior.TYPE_1;
-            }
-        }
+            case SONYA_BLADE -> // Солдат
+                random < 0.5 ? new RandomAttackDefendStrategy() : new DefendAttackDefendStrategy();
+            case SHAO_KAHN -> // Босс
+                new FourAttacksStrategy();
+        };
     }
 
     public Action getNextAction() {
-        switch (behavior) {
-            case TYPE_1:
-                if (behaviorStep < 2) {
-                    behaviorStep++;
-                    return Math.random() < 0.5 ? Action.ATTACK : Action.DEFEND;
-                } else {
-                    behaviorStep = 0;
-                    return Action.DEFEND;
-                }
-            case TYPE_2:
-                if (behaviorStep == 0 || behaviorStep == 2) {
-                    behaviorStep++;
-                    return Action.DEFEND;
-                } else {
-                    behaviorStep++;
-                    return Action.ATTACK;
-                }
-            case TYPE_3:
-                behaviorStep = (behaviorStep + 1) % 4;
-                return Action.ATTACK;
-            default:
-                return Action.ATTACK;
-        }
+        Action action = behaviorStrategy.getNextAction(behaviorStep);
+        behaviorStep = (behaviorStep + 1) % 4;
+        return action;
     }
 
     public void setHealth(int health) {
@@ -129,9 +105,9 @@ public class Enemy {
     @Override
     public String toString() {
         return new StringJoiner(", ", Enemy.class.getSimpleName() + "[", "]")
-                .add("attackDamage=" + attackDamage)
-                .add("type=" + type)
-                .add("maxHealth=" + maxHealth)
-                .toString();
+            .add("attackDamage=" + attackDamage)
+            .add("type=" + type)
+            .add("maxHealth=" + maxHealth)
+            .toString();
     }
 }

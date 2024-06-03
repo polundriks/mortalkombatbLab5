@@ -18,6 +18,8 @@ public class Player {
     private int health;
     private int maxHealth;
     private int attackDamage;
+    private int levelUpHealthIncrement;
+    private int levelUpAttackDamageIncrement;
     private int level;
     private List<Item> items;
     private int weakenedTurns;
@@ -27,6 +29,8 @@ public class Player {
         this.maxHealth = ConfigManager.getIntProperty("human", "initialHealth");
         this.health = maxHealth;
         this.attackDamage = ConfigManager.getIntProperty("human", "initialAttackDamage");
+        this.levelUpHealthIncrement = ConfigManager.getIntProperty("human", "levelUpHealthIncrement");
+        this.levelUpAttackDamageIncrement = ConfigManager.getIntProperty("human", "levelUpAttackDamageIncrement");
         String imagePath = ConfigManager.getStringProperty("human", "imagePath");
         try {
             imageBuffer = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream(imagePath)));
@@ -39,12 +43,12 @@ public class Player {
 
     public void increasePlayerDamage() {
         level++;
-        attackDamage += ConfigManager.getIntProperty("human", "levelUpAttackDamageIncrement");
+        attackDamage += levelUpAttackDamageIncrement;
     }
 
     public void increasePlayerMaxHealth() {
         level++;
-        maxHealth += ConfigManager.getIntProperty("human", "levelUpHealthIncrement");
+        maxHealth += levelUpHealthIncrement;
     }
 
     public void addItem(Item item) {

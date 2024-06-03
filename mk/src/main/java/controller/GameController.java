@@ -1,17 +1,10 @@
 package controller;
 
-import model.RecordTable;
-import model.ItemType;
-import model.EnemyType;
-import model.Player;
-import model.Item;
-import model.Action;
-import model.Enemy;
-import model.GameState;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import model.Record;
+import model.*;
 
 import java.util.Random;
 
@@ -28,6 +21,7 @@ public class GameController {
     @Getter
     @Setter
     private RecordTable recordTable;
+    @Getter
     private boolean playerTurn;
     private boolean playerStunned;
     private boolean enemyStunned;
@@ -68,6 +62,7 @@ public class GameController {
      * Метод moveToNextLocation перемещает игрока на следующую локацию.
      */
     public void moveToNextLocation() {
+        log.info("The player moves to the next location");
         if (gameState.getCurrentLocation() < gameState.getTotalLocations()) {
             gameState.setCurrentLocation(gameState.getCurrentLocation() + 1);
             gameState.nextLocation();
@@ -75,6 +70,7 @@ public class GameController {
         } else {
             // Игра окончена, игрок прошел все локации
             gameState.setGameOver(true);
+
         }
     }
 
@@ -139,7 +135,7 @@ public class GameController {
 
     private void checkEnemyHealth(Enemy enemy) {
         if (enemy.getHealth() <= 0) {
-            gameState.setScore(gameState.getScore() + 100); 
+            gameState.setScore(gameState.getScore() + 100);
             gameState.setDefeatedEnemies(gameState.getDefeatedEnemies() + 1);
 
             if (gameState.getDefeatedEnemies() >= gameState.getMaxEnemies()) {
@@ -218,7 +214,7 @@ public class GameController {
         log.info("The player chose to increase health: {} when moving to a level: {}",
             gameState.getPlayer().getMaxHealth(), gameState.getPlayer().getLevel());
     }
-    
+
     public void playerWeaken() {
         if (playerTurn) {
             log.info("The player is trying to weaken the enemy");
@@ -301,7 +297,7 @@ public class GameController {
                     }
                     break;
                 case WEAKEN:
-                
+
                     if (enemy.getType().getType() != EnemyType.WIZARD) {
                         log.info("The enemy cannot weaken the player (Action not available for {})\n",
                             enemy.getType().getType().getStr());
@@ -312,7 +308,7 @@ public class GameController {
                         enemy.setHealth((int) (enemy.getHealth() - player.getAttackDamage() * 1.15));
                         log.info("The enemy received additional damage for trying to weaken the player");
                         if (enemy.getHealth() <= 0) {
-                            gameState.setScore(gameState.getScore() + 100); 
+                            gameState.setScore(gameState.getScore() + 100);
                             gameState.setDefeatedEnemies(gameState.getDefeatedEnemies() + 1);
 
                             if (gameState.getDefeatedEnemies() >= gameState.getMaxEnemies()) {
