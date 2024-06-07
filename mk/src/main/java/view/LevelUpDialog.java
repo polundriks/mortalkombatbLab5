@@ -36,12 +36,12 @@ public class LevelUpDialog extends JDialog {
             setVisible(false);
         });
 
-        add(Box.createRigidArea(new Dimension(0, 10))); // Отступ сверху
+        add(Box.createRigidArea(new Dimension(0, 10))); 
         add(messageLabel);
-        add(Box.createRigidArea(new Dimension(0, 10))); // Отступ между элементами
+        add(Box.createRigidArea(new Dimension(0, 10))); 
         add(increaseDamageButton);
-        add(Box.createRigidArea(new Dimension(0, 10))); // Отступ между элементами
+        add(Box.createRigidArea(new Dimension(0, 10))); 
         add(increaseHealthButton);
-        add(Box.createRigidArea(new Dimension(0, 10))); // Отступ снизу
+        add(Box.createRigidArea(new Dimension(0, 10))); 
     }
 }

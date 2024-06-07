@@ -30,6 +30,7 @@ public class GameController {
 
     /**
      * Конструктор GameController инициализирует новую игру.
+     * @param levelUpChooseCallback
      */
     public GameController(Runnable levelUpChooseCallback) {
         gameState = new GameState();
