@@ -18,6 +18,7 @@ import java.util.StringJoiner;
 @Getter
 @Setter
 public class Enemy {
+
     private int health;
     private int attackDamage;
     private BufferedImage imageBuffer;
@@ -57,36 +58,34 @@ public class Enemy {
 
     private void determineBehavior(EnemyCharacter type) {
         double random = Math.random();
-        behaviorStrategy = switch (type) {
+        switch (type) {
             case BARAKA -> {
                 // Танк
                 if (random < 0.3) {
-                    yield new RandomAttackDefendStrategy();
-                }
-                if (random < 0.9) {
-                    yield new DefendAttackDefendStrategy();
+                    behaviorStrategy = new RandomAttackDefendStrategy();
+                } else if (random < 0.9) {
+                    behaviorStrategy = new DefendAttackDefendStrategy();
                 } else {
-                    yield new FourAttacksStrategy();
+                    behaviorStrategy = new FourAttacksStrategy();
                 }
             }
             case SUB_ZERO -> // Маг
-                random < 0.5 ? new RandomAttackDefendStrategy() : new FourAttacksStrategy();
+                behaviorStrategy = (random < 0.5) ? new RandomAttackDefendStrategy() : new FourAttacksStrategy();
             case LIU_KANG -> {
                 // Боец
                 if (random < 0.25) {
-                    yield new RandomAttackDefendStrategy();
-                }
-                if (random < 0.35) {
-                    yield new DefendAttackDefendStrategy();
+                    behaviorStrategy = new RandomAttackDefendStrategy();
+                } else if (random < 0.35) {
+                    behaviorStrategy = new DefendAttackDefendStrategy();
                 } else {
-                    yield new FourAttacksStrategy();
+                    behaviorStrategy = new FourAttacksStrategy();
                 }
             }
             case SONYA_BLADE -> // Солдат
-                random < 0.5 ? new RandomAttackDefendStrategy() : new DefendAttackDefendStrategy();
+                behaviorStrategy = (random < 0.5) ? new RandomAttackDefendStrategy() : new DefendAttackDefendStrategy();
             case SHAO_KAHN -> // Босс
-                new FourAttacksStrategy();
-        };
+                behaviorStrategy = new FourAttacksStrategy();
+        }
     }
 
     public Action getNextAction() {
@@ -105,9 +104,9 @@ public class Enemy {
     @Override
     public String toString() {
         return new StringJoiner(", ", Enemy.class.getSimpleName() + "[", "]")
-            .add("attackDamage=" + attackDamage)
-            .add("type=" + type)
-            .add("maxHealth=" + maxHealth)
-            .toString();
+                .add("attackDamage=" + attackDamage)
+                .add("type=" + type)
+                .add("maxHealth=" + maxHealth)
+                .toString();
     }
 }
